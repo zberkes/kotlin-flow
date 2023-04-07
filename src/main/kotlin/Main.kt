@@ -1,7 +1,20 @@
-fun main(args: Array<String>) {
-    println("Hello World!")
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 
-    // Try adding program arguments via Run/Debug configuration.
-    // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
-    println("Program arguments: ${args.joinToString()}")
+fun simple(): Flow<String> = flow {
+    for (i in 1..3) {
+        delay(100)
+        emit("[${Thread.currentThread().name}] result: $i")
+    }
+}
+
+fun main() = runBlocking<Unit> {
+    launch {
+        for (k in 1..20) {
+            println("[${Thread.currentThread().name}] I'm not blocked $k")
+            delay(20)
+        }
+    }
+
+    simple().collect { value -> println(value) }
 }
